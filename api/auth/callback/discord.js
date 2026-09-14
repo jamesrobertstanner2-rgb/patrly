@@ -27,7 +27,7 @@ export default async function handler(req, res) {
                     client_id: clientId,
                     client_secret: clientSecret,
                     grant_type: "authorization_code",
-                    code: code,
+                    code,
                     redirect_uri: redirectUri
                 })
             }
@@ -55,11 +55,10 @@ export default async function handler(req, res) {
             return res.status(400).send("Could not retrieve Discord user.");
         }
 
-        // Send the user to the Patrly dashboard.
-        const dashboardUrl =
-            "https://patrly.vercel.app/dashboard.html";
+        console.log("Discord user:", user);
 
-        return res.redirect(dashboardUrl);
+        return res.redirect("/dashboard.html");
+
     } catch (error) {
         console.error(error);
         return res.status(500).send("Something went wrong during Discord login.");
