@@ -1,95 +1,123 @@
-const crypto = require("crypto");
+import { getSession } from "./session.js";
 
-function parseCookies(req) {
-    const cookies = {};
 
-    const header = req.headers.cookie || "";
+export default async function handler(
+    req,
+    res
+) {
 
-    header.split(";").forEach(cookie => {
-        const parts = cookie.trim().split("=");
-
-        if (parts.length >= 2) {
-            cookies[parts.shift()] = decodeURIComponent(parts.join("="));
-        }
-    });
-
-    return cookies;
-}
-
-function decrypt(value) {
-    const key = crypto
-        .createHash("sha256")
-        .update(process.env.SESSION_SECRET)
-        .digest();
-
-    const parts = value.split(".");
-
-    if (parts.length !== 3) {
-        throw new Error("Invalid session.");
-    }
-
-    const iv = Buffer.from(parts[0], "hex");
-    const tag = Buffer.from(parts[1], "hex");
-    const encrypted = Buffer.from(parts[2], "hex");
-
-    const decipher = crypto.createDecipheriv(
-        "aes-256-gcm",
-        key,
-        iv
-    );
-
-    decipher.setAuthTag(tag);
-
-    let decrypted = decipher.update(encrypted);
-
-    decrypted = Buffer.concat([
-        decrypted,
-        decipher.final()
-    ]);
-
-    return JSON.parse(decrypted.toString("utf8"));
-}
-
-module.exports = async function handler(req, res) {
     try {
-        const cookies = parseCookies(req);
 
-        if (!cookies.patrly_session) {
+        const session =
+            getSession(req);
+
+
+        if (!session) {
+
             return res.status(401).json({
-                error: "Not logged in."
+                error:
+                    "You are not logged in."
             });
         }
 
-        const session = decrypt(
-            cookies.patrly_session
-        );
 
-        const response = await fetch(
-            "https://discord.com/api/users/@me/guilds",
-            {
-                headers: {
-                    Authorization:
-                        `Bearer ${session.accessToken}`
+        const response =
+            await fetch(
+                "https://discord.com/api/users/@me/guilds",
+                {
+
+                    headers: {
+                        Authorization:
+                            `Bearer ${session.access_token}`
+                    }
+
                 }
-            }
-        );
+            );
 
-        const guilds = await response.json();
+
+        const guilds =
+            await response.json();
+
 
         if (!response.ok) {
-            return res.status(response.status).json({
-                error: "Could not get Discord servers.",
-                details: guilds
+
+            return res.status(
+                response.status
+            ).json({
+                error:
+                    "Discord could not return your servers."
             });
         }
 
-        res.status(200).json(guilds);
+
+        /*
+         * Discord's OAuth guild list includes
+         * permissions for the user.
+         *
+         * We only show servers where the user
+         * has administrative-level access OR
+         * where Patrly has been configured.
+         */
+
+        const manageable =
+            guilds.filter(
+                guild => {
+
+                    const permissions =
+                        BigInt(
+                            guild.permissions || "0"
+                        );
+
+
+                    const ADMINISTRATOR =
+                        0x8n;
+
+                    const MANAGE_GUILD =
+                        0x20n;
+
+
+                    return (
+                        (
+                            permissions &
+                            ADMINISTRATOR
+                        ) !== 0n
+                    ) ||
+                    (
+                        (
+                            permissions &
+                            MANAGE_GUILD
+                        ) !== 0n
+                    );
+                }
+            );
+
+
+        res.status(200).json({
+
+            servers:
+                manageable.map(
+                    guild => ({
+
+                        id:
+                            guild.id,
+
+                        name:
+                            guild.name,
+
+                        icon:
+                            guild.icon
+                    })
+                )
+
+        });
 
     } catch (error) {
+
         console.error(error);
 
         res.status(500).json({
-            error: "Failed to load servers."
+            error:
+                "Unable to load Discord servers."
         });
     }
-};
+}

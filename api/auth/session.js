@@ -1,76 +1,161 @@
-const crypto = require("crypto");
+import crypto from "crypto";
 
-function parseCookies(req) {
-    const cookies = {};
 
-    const header = req.headers.cookie || "";
+function getCookie(
+    req,
+    name
+) {
 
-    header.split(";").forEach(cookie => {
-        const parts = cookie.trim().split("=");
+    const cookies =
+        req.headers.cookie || "";
 
-        if (parts.length >= 2) {
-            cookies[parts.shift()] = decodeURIComponent(parts.join("="));
+
+    const parts =
+        cookies.split(";");
+
+
+    for (
+        const part of parts
+    ) {
+
+        const [
+            key,
+            ...value
+        ] =
+            part.trim().split("=");
+
+
+        if (
+            key === name
+        ) {
+
+            return value.join("=");
         }
-    });
-
-    return cookies;
-}
-
-function decrypt(value) {
-    const key = crypto
-        .createHash("sha256")
-        .update(process.env.SESSION_SECRET)
-        .digest();
-
-    const parts = value.split(".");
-
-    if (parts.length !== 3) {
-        throw new Error("Invalid session.");
     }
 
-    const iv = Buffer.from(parts[0], "hex");
-    const tag = Buffer.from(parts[1], "hex");
-    const encrypted = Buffer.from(parts[2], "hex");
 
-    const decipher = crypto.createDecipheriv(
-        "aes-256-gcm",
-        key,
-        iv
-    );
-
-    decipher.setAuthTag(tag);
-
-    let decrypted = decipher.update(encrypted);
-    decrypted = Buffer.concat([
-        decrypted,
-        decipher.final()
-    ]);
-
-    return JSON.parse(decrypted.toString("utf8"));
+    return null;
 }
 
-module.exports = function handler(req, res) {
+
+function verifySession(
+    session
+) {
+
+    if (!session) {
+        return null;
+    }
+
+
+    const secret =
+        process.env.SESSION_SECRET;
+
+    if (!secret) {
+        return null;
+    }
+
+
+    const [
+        payload,
+        signature
+    ] =
+        session.split(".");
+
+
+    if (
+        !payload ||
+        !signature
+    ) {
+        return null;
+    }
+
+
+    const expected =
+        crypto
+            .createHmac(
+                "sha256",
+                secret
+            )
+            .update(payload)
+            .digest(
+                "base64url"
+            );
+
+
+    if (
+        !crypto.timingSafeEqual(
+            Buffer.from(signature),
+            Buffer.from(expected)
+        )
+    ) {
+
+        return null;
+    }
+
+
     try {
-        const cookies = parseCookies(req);
 
-        if (!cookies.patrly_session) {
-            return res.status(401).json({
-                authenticated: false
-            });
-        }
-
-        const session = decrypt(
-            cookies.patrly_session
+        return JSON.parse(
+            Buffer.from(
+                payload,
+                "base64url"
+            ).toString()
         );
 
-        res.status(200).json({
-            authenticated: true,
-            user: session.user
-        });
+    } catch {
 
-    } catch (error) {
-        res.status(401).json({
-            authenticated: false
+        return null;
+    }
+}
+
+
+export function getSession(req) {
+
+    const cookie =
+        getCookie(
+            req,
+            "patrly_session"
+        );
+
+
+    return verifySession(
+        cookie
+    );
+}
+
+
+export default function handler(
+    req,
+    res
+) {
+
+    const session =
+        getSession(req);
+
+
+    if (!session) {
+
+        return res.status(401).json({
+            error: "Not logged in."
         });
     }
-};
+
+
+    res.status(200).json({
+
+        user: {
+            id:
+                session.id,
+
+            username:
+                session.username,
+
+            global_name:
+                session.global_name,
+
+            avatar:
+                session.avatar
+        }
+
+    });
+}

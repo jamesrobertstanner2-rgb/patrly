@@ -1,29 +1,24 @@
-const crypto = require("crypto");
-
-module.exports = function handler(req, res) {
+export default function handler(req, res) {
     const clientId = process.env.DISCORD_CLIENT_ID;
 
+    const redirectUri =
+        process.env.DISCORD_REDIRECT_URI ||
+        "https://patrly.vercel.app/api/auth/callback-discord";
+
     if (!clientId) {
-        return res.status(500).send("DISCORD_CLIENT_ID is not configured.");
+        return res.status(500).json({
+            error: "DISCORD_CLIENT_ID environment variable is missing."
+        });
     }
-
-    const state = crypto.randomBytes(32).toString("hex");
-
-    res.setHeader(
-        "Set-Cookie",
-        `oauth_state=${state}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=600`
-    );
 
     const params = new URLSearchParams({
         client_id: clientId,
+        redirect_uri: redirectUri,
         response_type: "code",
-        redirect_uri: process.env.DISCORD_REDIRECT_URI,
-        scope: "identify guilds guilds.members.read"
+        scope: "identify guilds"
     });
 
-    res.writeHead(302, {
-        Location: `https://discord.com/oauth2/authorize?${params.toString()}`
-    });
-
-    res.end();
-};
+    return res.redirect(
+        `https://discord.com/oauth2/authorize?${params.toString()}`
+    );
+}
