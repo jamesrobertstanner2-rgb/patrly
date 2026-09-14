@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Patrly — ERLC Moderation Made Simple</title>
+    <title>Patrly — ERLC Moderation</title>
 
     <meta
         name="description"
@@ -20,7 +20,7 @@
     <header class="navbar">
         <div class="nav-container">
 
-            <a href="#home" class="brand">
+            <a href="#" class="brand">
                 <img
                     src="https://cdn.discordapp.com/attachments/1548557626751582338/1548927404289036318/Patrly_Black.png?ex=6aa8d68e&is=6aa7850e&hm=8623c5f2c68cd46e645a9ded861811caaa268ee08a7a698d60d353f3b572742d&"
                     alt="Patrly Logo"
@@ -34,19 +34,23 @@
                 <a href="#about">About</a>
             </nav>
 
-            <div class="nav-actions">
-                <button class="btn btn-login" onclick="openLogin()">
-                    Login
+            <div class="nav-buttons">
+                <button
+                    class="btn btn-secondary"
+                    type="button"
+                    onclick="loginWithDiscord()"
+                >
+                    Login with Discord
                 </button>
 
-                <button class="btn btn-primary" onclick="openSignup()">
+                <button
+                    class="btn btn-primary"
+                    type="button"
+                    onclick="openSignup()"
+                >
                     Get Started
                 </button>
             </div>
-
-            <button class="mobile-menu" onclick="toggleMenu()">
-                ☰
-            </button>
 
         </div>
     </header>
@@ -55,9 +59,7 @@
     <!-- HERO -->
     <main>
 
-        <section class="hero" id="home">
-
-            <div class="hero-background"></div>
+        <section class="hero">
 
             <div class="hero-content">
 
@@ -73,22 +75,23 @@
 
                 <p>
                     Patrly gives Emergency Response: Liberty County
-                    communities the tools they need to manage,
-                    moderate and grow their community.
+                    communities the tools they need to manage reports,
+                    staff and moderation in one powerful platform.
                 </p>
 
                 <div class="hero-buttons">
 
                     <button
                         class="btn btn-primary btn-large"
+                        type="button"
                         onclick="openSignup()"
                     >
                         Get Started
-                        <span>→</span>
                     </button>
 
                     <button
                         class="btn btn-secondary btn-large"
+                        type="button"
                         onclick="joinDiscord()"
                     >
                         Join Discord
@@ -97,18 +100,15 @@
                 </div>
 
                 <div class="trusted">
-
-                    <div class="avatar-stack">
-                        <div class="avatar">P</div>
-                        <div class="avatar">E</div>
-                        <div class="avatar">R</div>
-                        <div class="avatar">+</div>
+                    <div class="avatar-group">
+                        <span> P </span>
+                        <span> E </span>
+                        <span> R </span>
                     </div>
 
                     <p>
                         Built for modern ERLC communities
                     </p>
-
                 </div>
 
             </div>
@@ -117,22 +117,21 @@
 
 
         <!-- DASHBOARD -->
-        <section class="dashboard-section" id="dashboard">
+        <section id="dashboard" class="dashboard-section">
 
             <div class="section-heading">
 
-                <div class="section-label">
-                    DASHBOARD
-                </div>
+                <span class="section-label">
+                    Dashboard
+                </span>
 
                 <h2>
-                    Everything you need.
-                    <span>One place.</span>
+                    Everything in one place.
                 </h2>
 
                 <p>
-                    Manage your ERLC community from a clean,
-                    powerful moderation dashboard.
+                    Keep track of your community, staff and moderation
+                    activity from one simple dashboard.
                 </p>
 
             </div>
@@ -151,57 +150,53 @@
                         <strong>Patrly</strong>
                     </div>
 
-                    <div class="side-menu">
+                    <button
+                        type="button"
+                        class="dashboard-link active"
+                        onclick="dashboardPage('Overview')"
+                    >
+                        Overview
+                    </button>
 
-                        <button
-                            class="side-item active"
-                            onclick="dashboardPage('Overview')"
-                        >
-                            <span>⌂</span>
-                            Overview
-                        </button>
+                    <button
+                        type="button"
+                        class="dashboard-link"
+                        onclick="dashboardPage('Reports')"
+                    >
+                        Reports
+                    </button>
 
-                        <button
-                            class="side-item"
-                            onclick="dashboardPage('Reports')"
-                        >
-                            <span>⚑</span>
-                            Reports
-                        </button>
+                    <button
+                        type="button"
+                        class="dashboard-link"
+                        onclick="dashboardPage('Moderations')"
+                    >
+                        Moderations
+                    </button>
 
-                        <button
-                            class="side-item"
-                            onclick="dashboardPage('Moderation')"
-                        >
-                            <span>🛡</span>
-                            Moderation
-                        </button>
+                    <button
+                        type="button"
+                        class="dashboard-link"
+                        onclick="dashboardPage('Staff')"
+                    >
+                        Staff
+                    </button>
 
-                        <button
-                            class="side-item"
-                            onclick="dashboardPage('Staff')"
-                        >
-                            <span>♟</span>
-                            Staff
-                        </button>
+                    <button
+                        type="button"
+                        class="dashboard-link"
+                        onclick="dashboardPage('Logs')"
+                    >
+                        Logs
+                    </button>
 
-                        <button
-                            class="side-item"
-                            onclick="dashboardPage('Logs')"
-                        >
-                            <span>☷</span>
-                            Logs
-                        </button>
-
-                        <button
-                            class="side-item"
-                            onclick="dashboardPage('Settings')"
-                        >
-                            <span>⚙</span>
-                            Settings
-                        </button>
-
-                    </div>
+                    <button
+                        type="button"
+                        class="dashboard-link"
+                        onclick="dashboardPage('Settings')"
+                    >
+                        Settings
+                    </button>
 
                 </aside>
 
@@ -212,14 +207,13 @@
                     <div class="dashboard-top">
 
                         <div>
-                            <small>Dashboard</small>
-                            <h3 id="dashboardTitle">
-                                Overview
-                            </h3>
+                            <h3>Overview</h3>
+                            <p>Welcome back to Patrly.</p>
                         </div>
 
                         <button
-                            class="create-report"
+                            class="btn btn-primary"
+                            type="button"
                             onclick="createReport()"
                         >
                             + Create Report
@@ -232,39 +226,27 @@
                     <div class="stats-grid">
 
                         <div class="stat-card">
-                            <div class="stat-icon purple">⚑</div>
-
-                            <div>
-                                <small>Active Reports</small>
-                                <strong>12</strong>
-                            </div>
+                            <span>Active Reports</span>
+                            <strong>12</strong>
+                            <small>Currently open</small>
                         </div>
 
                         <div class="stat-card">
-                            <div class="stat-icon blue">🛡</div>
-
-                            <div>
-                                <small>Moderations</small>
-                                <strong>48</strong>
-                            </div>
+                            <span>Moderations</span>
+                            <strong>48</strong>
+                            <small>This month</small>
                         </div>
 
                         <div class="stat-card">
-                            <div class="stat-icon purple">♟</div>
-
-                            <div>
-                                <small>Staff Online</small>
-                                <strong>7</strong>
-                            </div>
+                            <span>Staff Online</span>
+                            <strong>7</strong>
+                            <small>Currently online</small>
                         </div>
 
                         <div class="stat-card">
-                            <div class="stat-icon blue">●</div>
-
-                            <div>
-                                <small>Players Online</small>
-                                <strong>32</strong>
-                            </div>
+                            <span>Players Online</span>
+                            <strong>32</strong>
+                            <small>Currently playing</small>
                         </div>
 
                     </div>
@@ -276,74 +258,55 @@
                         <div class="panel">
 
                             <div class="panel-header">
+
                                 <div>
-                                    <small>Moderation</small>
-                                    <h4>Recent Reports</h4>
+                                    <h3>Recent Reports</h3>
+                                    <p>Latest community reports</p>
                                 </div>
 
-                                <button onclick="viewReports()">
+                                <button
+                                    type="button"
+                                    onclick="viewReports()"
+                                >
                                     View all
                                 </button>
+
                             </div>
 
 
                             <div class="report">
-
-                                <div class="report-user">
-                                    <div class="mini-avatar">
-                                        JD
-                                    </div>
-
-                                    <div>
-                                        <strong>JohnDoe</strong>
-                                        <small>RDM Report</small>
-                                    </div>
+                                <div>
+                                    <strong>Player Report</strong>
+                                    <span>Player misconduct</span>
                                 </div>
 
                                 <span class="badge pending">
                                     Pending
                                 </span>
-
                             </div>
 
 
                             <div class="report">
-
-                                <div class="report-user">
-                                    <div class="mini-avatar">
-                                        MX
-                                    </div>
-
-                                    <div>
-                                        <strong>MaxPlayer</strong>
-                                        <small>FailRP Report</small>
-                                    </div>
+                                <div>
+                                    <strong>Player Report</strong>
+                                    <span>Rule violation</span>
                                 </div>
 
                                 <span class="badge reviewing">
                                     Reviewing
                                 </span>
-
                             </div>
 
 
                             <div class="report">
-
-                                <div class="report-user">
-                                    <div class="mini-avatar">
-                                        AB
-                                    </div>
-
-                                    <div>
-                                        <strong>AlexB</strong>
-                                        <small>Rule Violation</small>
-                                    </div>
+                                <div>
+                                    <strong>Staff Report</strong>
+                                    <span>Staff conduct</span>
                                 </div>
 
                                 <span class="badge resolved">
                                     Resolved
                                 </span>
-
                             </div>
 
                         </div>
@@ -353,58 +316,48 @@
                         <div class="panel">
 
                             <div class="panel-header">
-                                <div>
-                                    <small>Activity</small>
-                                    <h4>Moderation Activity</h4>
-                                </div>
-                            </div>
-
-
-                            <div class="activity">
-
-                                <div class="activity-dot"></div>
 
                                 <div>
-                                    <strong>Warning issued</strong>
-                                    <small>AlexStaff • 2m ago</small>
+                                    <h3>Moderation Activity</h3>
+                                    <p>Recent staff activity</p>
                                 </div>
 
                             </div>
 
 
                             <div class="activity">
+                                <div class="activity-icon">
+                                    M
+                                </div>
 
-                                <div class="activity-dot"></div>
+                                <div>
+                                    <strong>Moderation action</strong>
+                                    <span>5 minutes ago</span>
+                                </div>
+                            </div>
+
+
+                            <div class="activity">
+                                <div class="activity-icon">
+                                    R
+                                </div>
 
                                 <div>
                                     <strong>Report resolved</strong>
-                                    <small>Moderator • 8m ago</small>
+                                    <span>18 minutes ago</span>
                                 </div>
-
                             </div>
 
 
                             <div class="activity">
-
-                                <div class="activity-dot"></div>
-
-                                <div>
-                                    <strong>Player kicked</strong>
-                                    <small>Admin • 15m ago</small>
+                                <div class="activity-icon">
+                                    S
                                 </div>
-
-                            </div>
-
-
-                            <div class="activity">
-
-                                <div class="activity-dot"></div>
 
                                 <div>
                                     <strong>Staff member joined</strong>
-                                    <small>System • 21m ago</small>
+                                    <span>32 minutes ago</span>
                                 </div>
-
                             </div>
 
                         </div>
@@ -419,22 +372,21 @@
 
 
         <!-- FEATURES -->
-        <section class="features-section" id="features">
+        <section id="features" class="features-section">
 
             <div class="section-heading">
 
-                <div class="section-label">
-                    FEATURES
-                </div>
+                <span class="section-label">
+                    Features
+                </span>
 
                 <h2>
-                    Built for
-                    <span>moderation.</span>
+                    Built for moderation teams.
                 </h2>
 
                 <p>
-                    Powerful tools designed around the needs
-                    of ERLC communities and their staff teams.
+                    Everything your ERLC community needs to keep
+                    moderation organised.
                 </p>
 
             </div>
@@ -442,100 +394,112 @@
 
             <div class="features-grid">
 
-                <div class="feature-card">
-                    <div class="feature-icon">🛡</div>
+                <button
+                    class="feature-card"
+                    type="button"
+                    onclick="openFeature('Moderation')"
+                >
+                    <div class="feature-icon">M</div>
 
                     <h3>Moderation</h3>
 
                     <p>
-                        Keep track of warnings, kicks,
-                        bans and other moderation actions.
+                        Manage moderation actions and keep your
+                        community organised.
                     </p>
 
-                    <button onclick="openFeature('Moderation')">
-                        Learn more →
-                    </button>
-                </div>
+                    <span>Learn more →</span>
+                </button>
 
 
-                <div class="feature-card">
-                    <div class="feature-icon">⚑</div>
+                <button
+                    class="feature-card"
+                    type="button"
+                    onclick="openFeature('Player Reports')"
+                >
+                    <div class="feature-icon">R</div>
 
                     <h3>Player Reports</h3>
 
                     <p>
-                        Give your community an easy way
-                        to submit and manage player reports.
+                        Review and manage player reports from
+                        one central location.
                     </p>
 
-                    <button onclick="openFeature('Player Reports')">
-                        Learn more →
-                    </button>
-                </div>
+                    <span>Learn more →</span>
+                </button>
 
 
-                <div class="feature-card">
-                    <div class="feature-icon">♟</div>
+                <button
+                    class="feature-card"
+                    type="button"
+                    onclick="openFeature('Staff Management')"
+                >
+                    <div class="feature-icon">S</div>
 
                     <h3>Staff Management</h3>
 
                     <p>
-                        Manage your staff team and keep
-                        track of staff activity.
+                        Keep track of your moderation team and
+                        staff activity.
                     </p>
 
-                    <button onclick="openFeature('Staff Management')">
-                        Learn more →
-                    </button>
-                </div>
+                    <span>Learn more →</span>
+                </button>
 
 
-                <div class="feature-card">
-                    <div class="feature-icon">☷</div>
+                <button
+                    class="feature-card"
+                    type="button"
+                    onclick="openFeature('Detailed Logs')"
+                >
+                    <div class="feature-icon">L</div>
 
                     <h3>Detailed Logs</h3>
 
                     <p>
-                        Keep a clear history of moderation
-                        actions and community activity.
+                        Keep an organised record of important
+                        moderation activity.
                     </p>
 
-                    <button onclick="openFeature('Detailed Logs')">
-                        Learn more →
-                    </button>
-                </div>
+                    <span>Learn more →</span>
+                </button>
 
 
-                <div class="feature-card">
-                    <div class="feature-icon">◈</div>
+                <button
+                    class="feature-card"
+                    type="button"
+                    onclick="openFeature('Analytics')"
+                >
+                    <div class="feature-icon">A</div>
 
                     <h3>Analytics</h3>
 
                     <p>
-                        Understand your community with
+                        Understand your community through
                         useful moderation statistics.
                     </p>
 
-                    <button onclick="openFeature('Analytics')">
-                        Learn more →
-                    </button>
-                </div>
+                    <span>Learn more →</span>
+                </button>
 
 
-                <div class="feature-card">
-                    <div class="feature-icon">⚙</div>
+                <button
+                    class="feature-card"
+                    type="button"
+                    onclick="openFeature('Customisation')"
+                >
+                    <div class="feature-icon">C</div>
 
                     <h3>Customisation</h3>
 
                     <p>
-                        Configure Patrly around the way
-                        your community operates.
+                        Configure Patrly around the needs of
+                        your community.
                     </p>
 
-                    <button onclick="openFeature('Customisation')">
-                        Learn more →
-                    </button>
-                </div>
+                    <span>Learn more →</span>
+                </button>
 
             </div>
 
@@ -543,69 +507,36 @@
 
 
         <!-- ABOUT -->
-        <section class="about-section" id="about">
+        <section id="about" class="about-section">
 
             <div class="about-content">
 
-                <div>
+                <span class="section-label">
+                    About Patrly
+                </span>
 
-                    <div class="section-label">
-                        WHY PATRLY
-                    </div>
+                <h2>
+                    Made for ERLC communities.
+                </h2>
 
-                    <h2>
-                        Your community.
-                        <span>Your rules.</span>
-                    </h2>
+                <p>
+                    Patrly is designed to make community moderation
+                    simpler, faster and more organised.
+                </p>
 
-                    <p>
-                        Patrly is designed to make ERLC moderation
-                        easier for community owners, administrators
-                        and moderation teams.
-                    </p>
+                <p>
+                    Instead of managing everything across different
+                    systems, Patrly brings important moderation tools
+                    together in one platform.
+                </p>
 
-                    <p>
-                        Spend less time managing systems and more
-                        time running your community.
-                    </p>
-
-                    <button
-                        class="btn btn-primary"
-                        onclick="openSignup()"
-                    >
-                        Get Started →
-                    </button>
-
-                </div>
-
-
-                <div class="about-cards">
-
-                    <div class="about-card">
-                        <strong>01</strong>
-                        <h3>Simple</h3>
-                        <p>
-                            Easy-to-use tools without unnecessary complexity.
-                        </p>
-                    </div>
-
-                    <div class="about-card">
-                        <strong>02</strong>
-                        <h3>Powerful</h3>
-                        <p>
-                            Tools built around real moderation workflows.
-                        </p>
-                    </div>
-
-                    <div class="about-card">
-                        <strong>03</strong>
-                        <h3>Modern</h3>
-                        <p>
-                            A clean interface designed for today's communities.
-                        </p>
-                    </div>
-
-                </div>
+                <button
+                    class="btn btn-primary"
+                    type="button"
+                    onclick="joinDiscord()"
+                >
+                    Join the Community
+                </button>
 
             </div>
 
@@ -617,33 +548,32 @@
 
             <div class="cta-box">
 
-                <div class="cta-glow"></div>
-
-                <div class="section-label">
-                    GET STARTED
-                </div>
+                <span class="section-label">
+                    Get started
+                </span>
 
                 <h2>
-                    Ready to modernise
-                    <span>your moderation?</span>
+                    Ready to simplify moderation?
                 </h2>
 
                 <p>
-                    Join the Patrly community and keep
-                    your ERLC community under control.
+                    Start building a better moderation experience
+                    for your ERLC community.
                 </p>
 
                 <div class="hero-buttons">
 
                     <button
                         class="btn btn-primary btn-large"
+                        type="button"
                         onclick="openSignup()"
                     >
-                        Get Started →
+                        Get Started
                     </button>
 
                     <button
                         class="btn btn-secondary btn-large"
+                        type="button"
                         onclick="joinDiscord()"
                     >
                         Join Discord
@@ -661,7 +591,7 @@
     <!-- FOOTER -->
     <footer>
 
-        <div class="footer-content">
+        <div class="footer-container">
 
             <div class="footer-brand">
 
@@ -683,34 +613,33 @@
 
             <div class="footer-links">
 
-                <div>
-                    <h4>Platform</h4>
+                <button
+                    type="button"
+                    onclick="scrollToSection('features')"
+                >
+                    Features
+                </button>
 
-                    <button onclick="scrollToSection('features')">
-                        Features
-                    </button>
+                <button
+                    type="button"
+                    onclick="scrollToSection('dashboard')"
+                >
+                    Dashboard
+                </button>
 
-                    <button onclick="scrollToSection('dashboard')">
-                        Dashboard
-                    </button>
+                <button
+                    type="button"
+                    onclick="scrollToSection('about')"
+                >
+                    About
+                </button>
 
-                    <button onclick="openSignup()">
-                        Get Started
-                    </button>
-                </div>
-
-
-                <div>
-                    <h4>Community</h4>
-
-                    <button onclick="joinDiscord()">
-                        Discord
-                    </button>
-
-                    <button onclick="loginWithDiscord()">
-                        Login
-                    </button>
-                </div>
+                <button
+                    type="button"
+                    onclick="joinDiscord()"
+                >
+                    Discord
+                </button>
 
             </div>
 
@@ -718,55 +647,10 @@
 
 
         <div class="footer-bottom">
-            <span>
-                © 2026 Patrly. All rights reserved.
-            </span>
-
-            <span>
-                Built for ERLC communities.
-            </span>
+            © 2026 Patrly. All rights reserved.
         </div>
 
     </footer>
-
-
-    <!-- MODAL -->
-    <div class="modal-overlay" id="modal">
-
-        <div class="modal">
-
-            <button
-                class="modal-close"
-                onclick="closeModal()"
-            >
-                ×
-            </button>
-
-            <div class="modal-logo">
-                <img
-                    src="https://cdn.discordapp.com/attachments/1548557626751582338/1548927404289036318/Patrly_Black.png?ex=6aa8d68e&is=6aa7850e&hm=8623c5f2c68cd46e645a9ded861811caaa268ee08a7a698d60d353f3b572742d&"
-                    alt="Patrly"
-                >
-            </div>
-
-            <h2 id="modalTitle">
-                Get Started
-            </h2>
-
-            <p id="modalText">
-                Join the Patrly Discord to get started.
-            </p>
-
-            <button
-                class="btn btn-primary btn-large full-width"
-                onclick="joinDiscord()"
-            >
-                Join Patrly Discord →
-            </button>
-
-        </div>
-
-    </div>
 
 
     <script src="script.js"></script>
