@@ -2,9 +2,12 @@ export default async function handler(req, res) {
     try {
         const clientId = process.env.DISCORD_CLIENT_ID;
         const clientSecret = process.env.DISCORD_CLIENT_SECRET;
-        const redirectUri = process.env.DISCORD_REDIRECT_URI;
 
-        if (!clientId || !clientSecret || !redirectUri) {
+        const redirectUri =
+            process.env.DISCORD_REDIRECT_URI ||
+            "https://patrly.vercel.app/api/auth/callback-discord";
+
+        if (!clientId || !clientSecret) {
             return res.status(500).json({
                 error: "Discord OAuth environment variables are missing."
             });
@@ -30,7 +33,7 @@ export default async function handler(req, res) {
                     client_id: clientId,
                     client_secret: clientSecret,
                     grant_type: "authorization_code",
-                    code: code,
+                    code,
                     redirect_uri: redirectUri
                 })
             }
