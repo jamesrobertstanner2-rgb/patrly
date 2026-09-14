@@ -1,195 +1,369 @@
-// ========================================
-// PATRLY
-// Website JavaScript
-// ========================================
+/*
+    PATRLY
+    Main website JavaScript
+*/
 
 
-// ========================================
-// DISCORD
-// ========================================
+const DISCORD_INVITE =
+    "https://discord.gg/eWQr8HRr5W";
+
+
+/* =========================
+   DISCORD LOGIN
+========================= */
 
 function loginWithDiscord() {
+
     window.location.href = "/api/auth/discord";
+
 }
 
-function openSignup() {
-    window.location.href = "/api/auth/discord";
-}
+
+/* =========================
+   JOIN DISCORD
+========================= */
 
 function joinDiscord() {
+
     window.open(
-        "https://discord.gg/eWQr8HRr5W",
+        DISCORD_INVITE,
         "_blank",
         "noopener,noreferrer"
     );
+
 }
 
 
-// ========================================
-// NAVIGATION
-// ========================================
+/* =========================
+   SHOW SERVER PAGE
+========================= */
 
-function scrollToSection(sectionId) {
-    const section = document.getElementById(sectionId);
+function showServerPage() {
 
-    if (!section) {
-        console.warn("Section not found:", sectionId);
-        return;
+    document
+        .getElementById("landingPage")
+        .classList.add("hidden-page");
+
+    document
+        .getElementById("serverPage")
+        .classList.remove("hidden-page");
+
+    window.scrollTo(0, 0);
+
+    loadDashboard();
+
+}
+
+
+/* =========================
+   LOAD DASHBOARD
+========================= */
+
+async function loadDashboard() {
+
+    const serverGrid =
+        document.getElementById("serverGrid");
+
+    const userBox =
+        document.getElementById("userBox");
+
+
+    try {
+
+        const response =
+            await fetch("/api/auth/discord?data=true");
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Unable to load Discord data."
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        if (!data.user) {
+
+            window.location.href =
+                "/api/auth/discord";
+
+            return;
+
+        }
+
+
+        userBox.innerHTML = `
+            Logged in as
+            <strong>
+                ${escapeHTML(
+                    data.user.global_name ||
+                    data.user.username
+                )}
+            </strong>
+        `;
+
+
+        renderServers(data.guilds || []);
+
+
+    } catch (error) {
+
+        console.error(error);
+
+
+        serverGrid.innerHTML = `
+            <div class="loading-card">
+                <h2>Unable to load servers</h2>
+                <p style="margin-top:10px;">
+                    Please login with Discord again.
+                </p>
+
+                <button
+                    class="primary-button"
+                    style="margin-top:20px;"
+                    onclick="loginWithDiscord()"
+                >
+                    Login Again
+                </button>
+            </div>
+        `;
+
     }
 
-    section.scrollIntoView({
-        behavior: "smooth",
-        block: "start"
+}
+
+
+/* =========================
+   RENDER SERVERS
+========================= */
+
+function renderServers(guilds) {
+
+    const serverGrid =
+        document.getElementById("serverGrid");
+
+
+    if (!guilds.length) {
+
+        serverGrid.innerHTML = `
+            <div class="loading-card">
+
+                <h2>No manageable servers found</h2>
+
+                <p style="margin-top:10px;">
+                    You need permission to manage a Discord
+                    server before it can appear here.
+                </p>
+
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    serverGrid.innerHTML = "";
+
+
+    guilds.forEach(server => {
+
+        const card =
+            document.createElement("div");
+
+
+        card.className =
+            "server-card";
+
+
+        const icon =
+            server.icon
+                ? `
+                    <img
+                        src="https://cdn.discordapp.com/icons/${server.id}/${server.icon}.png?size=128"
+                        alt=""
+                    >
+                  `
+                : escapeHTML(
+                    server.name
+                        .substring(0, 1)
+                        .toUpperCase()
+                );
+
+
+        card.innerHTML = `
+
+            <div class="server-icon">
+                ${icon}
+            </div>
+
+            <h2>
+                ${escapeHTML(server.name)}
+            </h2>
+
+            <p>
+                Discord Server
+            </p>
+
+            <button
+                class="manage-button"
+                onclick='openServer(${JSON.stringify(server)})'
+            >
+                Manage Server →
+            </button>
+
+        `;
+
+
+        serverGrid.appendChild(card);
+
     });
+
 }
 
 
-// ========================================
-// FEATURES
-// ========================================
+/* =========================
+   OPEN SERVER
+========================= */
 
-function openFeature(feature) {
-    const messages = {
-        moderation:
-            "Patrly gives your ERLC community powerful moderation tools.",
+function openServer(server) {
 
-        reports:
-            "Manage player reports and keep track of moderation activity.",
+    sessionStorage.setItem(
+        "selectedServer",
+        JSON.stringify(server)
+    );
 
-        dashboard:
-            "The Patrly dashboard gives your staff a central place to manage your community.",
 
-        logging:
-            "Keep track of important moderation and server activity.",
+    document
+        .getElementById("serverPage")
+        .classList.add("hidden-page");
 
-        automod:
-            "Automated moderation helps your staff keep your community safe.",
 
-        commands:
-            "Use Patrly commands to manage your ERLC community."
-    };
+    document
+        .getElementById("moderationPage")
+        .classList.remove("hidden-page");
 
-    const message =
-        messages[feature] ||
-        "This Patrly feature will be available when the platform is connected.";
 
-    alert(message);
+    document
+        .getElementById("selectedServerName")
+        .textContent =
+        server.name;
+
+
+    window.scrollTo(0, 0);
+
 }
 
 
-// ========================================
-// DASHBOARD
-// ========================================
+/* =========================
+   BACK TO SERVERS
+========================= */
 
-function dashboardPage(page) {
-    const pages = {
-        overview: "Dashboard Overview",
-        moderation: "Moderation",
-        reports: "Reports",
-        members: "Members",
-        settings: "Settings"
-    };
+function backToServers() {
 
-    const title = pages[page] || page;
+    document
+        .getElementById("moderationPage")
+        .classList.add("hidden-page");
+
+
+    document
+        .getElementById("serverPage")
+        .classList.remove("hidden-page");
+
+
+    window.scrollTo(0, 0);
+
+}
+
+
+/* =========================
+   MODERATION TOOLS
+========================= */
+
+function openModerationTool(tool) {
 
     alert(
-        title +
-        " will open here once your Patrly dashboard backend is connected."
+        tool +
+        " is coming next in the Patrly moderation dashboard."
     );
+
 }
 
 
-// ========================================
-// REPORTS
-// ========================================
+/* =========================
+   CREATE DISCORD SERVER
+========================= */
 
-function createReport() {
-    alert(
-        "Report creation will be available once Patrly's backend is connected."
+function createDiscordServer() {
+
+    window.open(
+        "https://discord.com/channels/@me",
+        "_blank",
+        "noopener,noreferrer"
     );
+
 }
 
-function viewReports() {
-    alert(
-        "Your reports will appear here once Patrly's backend is connected."
+
+/* =========================
+   LOGOUT
+========================= */
+
+function logout() {
+
+    sessionStorage.removeItem(
+        "selectedServer"
     );
+
+
+    window.location.href =
+        "/api/auth/discord?logout=true";
+
 }
 
 
-// ========================================
-// BUTTON SETUP
-// ========================================
+/* =========================
+   ESCAPE HTML
+========================= */
 
-document.addEventListener("DOMContentLoaded", function () {
+function escapeHTML(value) {
 
-    // Login buttons
-    document.querySelectorAll("[data-login]").forEach(function (button) {
-        button.addEventListener("click", loginWithDiscord);
-    });
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
 
-
-    // Get Started buttons
-    document.querySelectorAll("[data-signup]").forEach(function (button) {
-        button.addEventListener("click", openSignup);
-    });
+}
 
 
-    // Join Discord buttons
-    document.querySelectorAll("[data-discord]").forEach(function (button) {
-        button.addEventListener("click", joinDiscord);
-    });
+/* =========================
+   CHECK URL
+========================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        const params =
+            new URLSearchParams(
+                window.location.search
+            );
 
 
-    // Navigation buttons
-    document.querySelectorAll("[data-scroll]").forEach(function (button) {
-        button.addEventListener("click", function () {
-            scrollToSection(button.dataset.scroll);
-        });
-    });
+        if (
+            params.get("logged_in") === "true"
+        ) {
 
+            showServerPage();
 
-    // Feature buttons
-    document.querySelectorAll("[data-feature]").forEach(function (button) {
-        button.addEventListener("click", function () {
-            openFeature(button.dataset.feature);
-        });
-    });
+        }
 
-
-    // Dashboard buttons
-    document.querySelectorAll("[data-dashboard]").forEach(function (button) {
-        button.addEventListener("click", function () {
-            dashboardPage(button.dataset.dashboard);
-        });
-    });
-
-
-    // Report creation
-    document.querySelectorAll("[data-create-report]").forEach(function (button) {
-        button.addEventListener("click", createReport);
-    });
-
-
-    // View reports
-    document.querySelectorAll("[data-view-reports]").forEach(function (button) {
-        button.addEventListener("click", viewReports);
-    });
-
-});
-
-
-// ========================================
-// BACKUP CLICK HANDLER
-// ========================================
-
-// This also supports buttons using onclick="loginWithDiscord()"
-// or onclick="joinDiscord()" directly.
-
-window.loginWithDiscord = loginWithDiscord;
-window.openSignup = openSignup;
-window.joinDiscord = joinDiscord;
-window.scrollToSection = scrollToSection;
-window.openFeature = openFeature;
-window.dashboardPage = dashboardPage;
-window.createReport = createReport;
-window.viewReports = viewReports;
+    }
+);
