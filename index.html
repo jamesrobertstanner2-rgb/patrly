@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Patrly | ERLC Moderation</title>
+    <meta name="description" content="Patrly is a modern moderation platform for Emergency Response: Liberty County communities.">
+
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <header class="navbar">
+        <div class="nav-container">
+
+            <a href="#" class="brand">
+                <img src="https://cdn.discordapp.com/attachments/1548557626751582338/1548927404289036318/Patrly_Black.png?ex=6aa8d68e&is=6aa7850e&hm=8623c5f2c68cd46e645a9ded861811caaa268ee08a7a698d60d353f3b572742d&"
+                     alt="Patrly Logo">
+                <span>Patrly</span>
+            </a>
+
+            <nav class="nav-links">
+                <a href="#features">Features</a>
+                <a href="#dashboard">Dashboard</a>
+                <a href="#about">About</a>
+            </nav>
+
+            <button class="login-button" onclick="loginWithDiscord()">
+                Login with Discord
+            </button>
+
+        </div>
+    </header>
+
+
+    <!-- HERO -->
+    <main>
+
+        <section class="hero">
+
+            <div class="hero-content">
+
+                <div class="badge">
+                    <span class="status-dot"></span>
+                    Built for ERLC communities
+                </div>
+
+                <h1>
+                    Moderation made
+                    <span>simple.</span>
+                </h1>
+
+                <p>
+                    Patrly is a modern moderation platform designed
+                    to help Emergency Response: Liberty County communities
+                    manage their servers with ease.
+                </p>
+
+                <div class="hero-buttons">
+                    <button class="primary-button" onclick="openSignup()">
+                        Get Started
+                        <span>→</span>
+                    </button>
+
+                    <button class="secondary-button" onclick="joinDiscord()">
+                        Join our Discord
+                    </button>
+                </div>
+
+                <div class="hero-note">
+                    <span>●</span> Powered by Discord
+                </div>
+
+            </div>
+
+
+            <!-- DASHBOARD PREVIEW -->
+            <div class="dashboard-preview">
+
+                <div class="preview-top">
+                    <div class="window-dots">
+                        <i></i>
+                        <i></i>
+                        <i></i>
+                    </div>
+
+                    <span>Patrly Dashboard</span>
+                </div>
+
+                <div class="preview-body">
+
+                    <aside class="preview-sidebar">
+
+                        <div class="preview-logo">
+                            <img src="https://cdn.discordapp.com/attachments/1548557626751582338/1548927404289036318/Patrly_Black.png?ex=6aa8d68e&is=6aa7850e&hm=8623c5f2c68cd46e645a9ded861811caaa268ee08a7a698d60d353f3b572742d&">
+                            <strong>Patrly</strong>
+                        </div>
+
+                        <div class="sidebar-item active">
+                            <span>⌂</span>
+                            Overview
+                        </div>
+
+                        <div class="sidebar-item">
+                            <span>⚑</span>
+                            Reports
+                        </div>
+
+                        <div class="sidebar-item">
+                            <span>✓</span>
+                            Moderations
+                        </div>
+
+                        <div class="sidebar-item">
+                            <span>♟</span>
+                            Staff
+                        </div>
+
+                        <div class="sidebar-item">
+                            <span>◷</span>
+                            Logs
+                        </div>
+
+                        <div class="sidebar-item">
+                            <span>⚙</span>
+                            Settings
+                        </div>
+
+                    </aside>
+
+
+                    <div class="preview-main">
+
+                        <div class="preview-heading">
+                            <div>
+                                <small>WELCOME BACK</small>
+                                <h3>Community Overview</h3>
+                            </div>
+
+                            <div class="user-circle">P</div>
+                        </div>
+
+
+                        <div class="stats">
+
+                            <div class="stat-card">
+                                <small>Total Reports</small>
+                                <strong>128</strong>
+                                <span class="positive">↑ 12%</span>
+                            </div>
+
+                            <div class="stat-card">
+                                <small>Moderations</small>
+                                <strong>346</strong>
+                                <span class="positive">↑ 8%</span>
+                            </div>
+
+                            <div class="stat-card">
+                                <small>Staff Members</small>
+                                <strong>24</strong>
+                                <span class="neutral">Active</span>
+                            </div>
+
+                        </div>
+
+
+                        <div class="preview-panels">
+
+                            <div class="panel">
+
+                                <div class="panel-header">
+                                    <strong>Recent Reports</strong>
+                                    <span>View all</span>
+                                </div>
+
+                                <div class="report">
+                                    <div class="report-icon">!</div>
+
+                                    <div>
+                                        <strong>Player Report</strong>
+                                        <small>Reported 5 minutes ago</small>
+                                    </div>
+
+                                    <b class="pending">Pending</b>
+                                </div>
+
+                                <div class="report">
+                                    <div class="report-icon">!</div>
+
+                                    <div>
+                                        <strong>Staff Report</strong>
+                                        <small>Reported 18 minutes ago</small>
+                                    </div>
+
+                                    <b class="reviewed">Reviewed</b>
+                                </div>
+
+                            </div>
+
+
+                            <div class="panel activity-panel">
+
+                                <div class="panel-header">
+                                    <strong>Activity</strong>
+                                </div>
+
+                                <div class="activity">
+                                    <span></span>
+                                    <p><b>Moderator</b> reviewed a report</p>
+                                </div>
+
+                                <div class="activity">
+                                    <span></span>
+                                    <p><b>Administrator</b> issued a moderation</p>
+                                </div>
+
+                                <div class="activity">
+                                    <span></span>
+                                    <p><b>Moderator</b> joined the team</p>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- FEATURES -->
+        <section id="features" class="section">
+
+            <div class="section-heading">
+                <div class="section-label">FEATURES</div>
+
+                <h2>
+                    Everything your community needs.
+                </h2>
+
+                <p>
+                    Powerful moderation tools built around the needs
+                    of ERLC communities.
+                </p>
+            </div>
+
+
+            <div class="feature-grid">
+
+                <div class="feature-card" onclick="openFeature('Reports')">
+                    <div class="feature-icon">⚑</div>
+                    <h3>Reports</h3>
+                    <p>
+                        Manage player and staff reports from one
+                        organised dashboard.
+                    </p>
+                    <span>Learn more →</span>
+                </div>
+
+
+                <div class="feature-card" onclick="openFeature('Moderation')">
+                    <div class="feature-icon">✓</div>
+                    <h3>Moderation</h3>
+                    <p>
+                        Keep track of moderation actions across
+                        your entire community.
+                    </p>
+                    <span>Learn more →</span>
+                </div>
+
+
+                <div class="feature-card" onclick="openFeature('Staff Management')">
+                    <div class="feature-icon">♟</div>
+                    <h3>Staff Management</h3>
+                    <p>
+                        Manage your moderation team and keep
+                        everyone organised.
+                    </p>
+                    <span>Learn more →</span>
+                </div>
+
+
+                <div class="feature-card" onclick="openFeature('Logs')">
+                    <div class="feature-icon">◷</div>
+                    <h3>Logs</h3>
+                    <p>
+                        Keep an organised record of activity
+                        throughout your community.
+                    </p>
+                    <span>Learn more →</span>
+                </div>
+
+
+                <div class="feature-card" onclick="openFeature('Discord')">
+                    <div class="feature-icon">◉</div>
+                    <h3>Discord Integration</h3>
+                    <p>
+                        Connect your community through Discord
+                        authentication and management.
+                    </p>
+                    <span>Learn more →</span>
+                </div>
+
+
+                <div class="feature-card" onclick="openFeature('Dashboard')">
+                    <div class="feature-icon">▦</div>
+                    <h3>Modern Dashboard</h3>
+                    <p>
+                        A clean and simple interface designed
+                        to make moderation easier.
+                    </p>
+                    <span>Learn more →</span>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- DASHBOARD -->
+        <section id="dashboard" class="section dashboard-section">
+
+            <div class="dashboard-content">
+
+                <div class="section-label">DASHBOARD</div>
+
+                <h2>
+                    Your community.
+                    <span>One dashboard.</span>
+                </h2>
+
+                <p>
+                    Keep your reports, moderation actions, staff
+                    and logs organised in one central location.
+                </p>
+
+                <button class="primary-button" onclick="loginWithDiscord()">
+                    Open Dashboard →
+                </button>
+
+            </div>
+
+            <div class="dashboard-box">
+
+                <div class="dashboard-line">
+                    <span>Reports</span>
+                    <b>128</b>
+                </div>
+
+                <div class="dashboard-line">
+                    <span>Moderations</span>
+                    <b>346</b>
+                </div>
+
+                <div class="dashboard-line">
+                    <span>Staff</span>
+                    <b>24</b>
+                </div>
+
+                <div class="dashboard-line">
+                    <span>Server Status</span>
+                    <b class="online">Online</b>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ABOUT -->
+        <section id="about" class="section about-section">
+
+            <div class="section-heading">
+
+                <div class="section-label">ABOUT PATRLY</div>
+
+                <h2>
+                    Built for communities.
+                </h2>
+
+                <p>
+                    Patrly is designed to provide ERLC communities
+                    with simple and reliable moderation management.
+                    From reports to staff management, everything is
+                    designed to be easy to understand.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- CTA -->
+        <section class="cta">
+
+            <div class="cta-content">
+
+                <h2>Ready to get started?</h2>
+
+                <p>
+                    Join Patrly and simplify your community moderation.
+                </p>
+
+                <div class="hero-buttons">
+
+                    <button class="primary-button" onclick="loginWithDiscord()">
+                        Get Started →
+                    </button>
+
+                    <button class="secondary-button" onclick="joinDiscord()">
+                        Join Discord
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- FOOTER -->
+    <footer>
+
+        <div class="footer-container">
+
+            <div class="footer-brand">
+                <img src="https://cdn.discordapp.com/attachments/1548557626751582338/1548927404289036318/Patrly_Black.png?ex=6aa8d68e&is=6aa7850e&hm=8623c5f2c68cd46e645a9ded861811caaa268ee08a7a698d60d353f3b572742d&">
+                <span>Patrly</span>
+            </div>
+
+            <p>Modern moderation for ERLC communities.</p>
+
+            <span class="copyright">
+                © 2026 Patrly. All rights reserved.
+            </span>
+
+        </div>
+
+    </footer>
+
+
+    <script src="./script.js"></script>
+
+</body>
+</html>
