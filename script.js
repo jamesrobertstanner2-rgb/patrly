@@ -1,335 +1,325 @@
-/*
-    PATRLY
-    Main website JavaScript
-*/
+async function api(url, options = {}) {
+    const response = await fetch(url, {
+        credentials: "include",
+        ...options
+    });
 
+    const data = await response.json();
 
-const DISCORD_INVITE =
-    "https://discord.gg/eWQr8HRr5W";
+    if (!response.ok) {
+        throw new Error(
+            data.error || "Something went wrong."
+        );
+    }
+
+    return data;
+}
 
 
 /* =========================
-   DISCORD LOGIN
+   LOGIN
 ========================= */
 
 function loginWithDiscord() {
-
     window.location.href = "/api/auth/discord";
-
 }
 
 
 /* =========================
-   JOIN DISCORD
+   LOAD USER
 ========================= */
 
-function joinDiscord() {
+async function loadUser() {
+    try {
 
-    window.open(
-        DISCORD_INVITE,
-        "_blank",
-        "noopener,noreferrer"
+        const data = await api("/api/session");
+
+        const userArea =
+            document.getElementById("userArea");
+
+        if (!userArea) return;
+
+        const name =
+            data.user.global_name ||
+            data.user.username;
+
+        userArea.innerHTML = `
+            <div class="user-pill">
+                ${escapeHTML(name)}
+            </div>
+        `;
+
+    } catch {
+
+        const userArea =
+            document.getElementById("userArea");
+
+        if (userArea) {
+            userArea.innerHTML = `
+                <a href="/" class="login-small">
+                    Login
+                </a>
+            `;
+        }
+    }
+}
+
+
+/* =========================
+   SERVERS
+========================= */
+
+async function loadServers() {
+
+    const container =
+        document.getElementById("serverList");
+
+    if (!container) return;
+
+    try {
+
+        const guilds =
+            await api("/api/servers");
+
+        if (!guilds.length) {
+
+            container.innerHTML = `
+                <div class="empty-card">
+
+                    <h2>No servers found</h2>
+
+                    <p>
+                        We couldn't find any Discord servers
+                        connected to your account.
+                    </p>
+
+                </div>
+            `;
+
+            return;
+        }
+
+        container.innerHTML = "";
+
+        guilds.forEach(guild => {
+
+            const card =
+                document.createElement("div");
+
+            card.className = "server-card";
+
+            const icon = guild.icon
+                ? `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png?size=128`
+                : "";
+
+            card.innerHTML = `
+
+                <div class="server-icon">
+
+                    ${
+                        icon
+                        ? `<img src="${icon}" alt="">`
+                        : `<span>${escapeHTML(
+                            guild.name.charAt(0)
+                        )}</span>`
+                    }
+
+                </div>
+
+                <div class="server-info">
+
+                    <h2>
+                        ${escapeHTML(guild.name)}
+                    </h2>
+
+                    <p>
+                        Discord Server
+                    </p>
+
+                </div>
+
+                <button
+                    class="primary-button"
+                    onclick="selectServer('${guild.id}', '${escapeAttribute(guild.name)}')"
+                >
+                    Select
+                </button>
+
+            `;
+
+            container.appendChild(card);
+        });
+
+    } catch (error) {
+
+        container.innerHTML = `
+            <div class="empty-card">
+
+                <h2>Couldn't load servers</h2>
+
+                <p>
+                    ${escapeHTML(error.message)}
+                </p>
+
+            </div>
+        `;
+    }
+
+    loadUser();
+}
+
+
+/* =========================
+   SELECT SERVER
+========================= */
+
+async function selectServer(guildId, guildName) {
+
+    localStorage.setItem(
+        "patrly_guild_id",
+        guildId
     );
 
+    localStorage.setItem(
+        "patrly_guild_name",
+        guildName
+    );
+
+    window.location.href =
+        `/dashboard.html?guild=${guildId}`;
 }
 
 
 /* =========================
-   SHOW SERVER PAGE
-========================= */
-
-function showServerPage() {
-
-    document
-        .getElementById("landingPage")
-        .classList.add("hidden-page");
-
-    document
-        .getElementById("serverPage")
-        .classList.remove("hidden-page");
-
-    window.scrollTo(0, 0);
-
-    loadDashboard();
-
-}
-
-
-/* =========================
-   LOAD DASHBOARD
+   DASHBOARD
 ========================= */
 
 async function loadDashboard() {
 
-    const serverGrid =
-        document.getElementById("serverGrid");
+    const serverName =
+        document.getElementById("serverName");
 
-    const userBox =
-        document.getElementById("userBox");
+    if (!serverName) return;
 
+    const guildId =
+        localStorage.getItem("patrly_guild_id");
 
-    try {
+    const guildName =
+        localStorage.getItem("patrly_guild_name");
 
-        const response =
-            await fetch("/api/auth/discord?data=true");
+    if (!guildId) {
 
-
-        if (!response.ok) {
-
-            throw new Error(
-                "Unable to load Discord data."
-            );
-
-        }
-
-
-        const data =
-            await response.json();
-
-
-        if (!data.user) {
-
-            window.location.href =
-                "/api/auth/discord";
-
-            return;
-
-        }
-
-
-        userBox.innerHTML = `
-            Logged in as
-            <strong>
-                ${escapeHTML(
-                    data.user.global_name ||
-                    data.user.username
-                )}
-            </strong>
-        `;
-
-
-        renderServers(data.guilds || []);
-
-
-    } catch (error) {
-
-        console.error(error);
-
-
-        serverGrid.innerHTML = `
-            <div class="loading-card">
-                <h2>Unable to load servers</h2>
-                <p style="margin-top:10px;">
-                    Please login with Discord again.
-                </p>
-
-                <button
-                    class="primary-button"
-                    style="margin-top:20px;"
-                    onclick="loginWithDiscord()"
-                >
-                    Login Again
-                </button>
-            </div>
-        `;
-
-    }
-
-}
-
-
-/* =========================
-   RENDER SERVERS
-========================= */
-
-function renderServers(guilds) {
-
-    const serverGrid =
-        document.getElementById("serverGrid");
-
-
-    if (!guilds.length) {
-
-        serverGrid.innerHTML = `
-            <div class="loading-card">
-
-                <h2>No manageable servers found</h2>
-
-                <p style="margin-top:10px;">
-                    You need permission to manage a Discord
-                    server before it can appear here.
-                </p>
-
-            </div>
-        `;
+        window.location.href =
+            "/servers.html";
 
         return;
-
     }
 
+    serverName.textContent =
+        guildName || "Server";
 
-    serverGrid.innerHTML = "";
+    await loadUser();
 
-
-    guilds.forEach(server => {
-
-        const card =
-            document.createElement("div");
-
-
-        card.className =
-            "server-card";
+    setupShift();
+}
 
 
-        const icon =
-            server.icon
-                ? `
-                    <img
-                        src="https://cdn.discordapp.com/icons/${server.id}/${server.icon}.png?size=128"
-                        alt=""
-                    >
-                  `
-                : escapeHTML(
-                    server.name
-                        .substring(0, 1)
-                        .toUpperCase()
-                );
+/* =========================
+   SHIFT SYSTEM
+========================= */
 
+function setupShift() {
 
-        card.innerHTML = `
+    const guildId =
+        localStorage.getItem("patrly_guild_id");
 
-            <div class="server-icon">
-                ${icon}
-            </div>
+    const userShiftKey =
+        `patrly_shift_${guildId}`;
 
-            <h2>
-                ${escapeHTML(server.name)}
-            </h2>
+    const shift =
+        localStorage.getItem(userShiftKey);
 
-            <p>
-                Discord Server
-            </p>
+    const status =
+        document.getElementById("shiftStatus");
 
-            <button
-                class="manage-button"
-                onclick='openServer(${JSON.stringify(server)})'
-            >
-                Manage Server →
-            </button>
+    const button =
+        document.getElementById("shiftButton");
 
+    if (!status || !button) return;
+
+    if (shift) {
+
+        const started =
+            new Date(shift);
+
+        status.innerHTML = `
+            You are currently <strong>on shift</strong>.<br>
+            Started ${started.toLocaleTimeString()}
         `;
 
+        button.textContent =
+            "End Shift";
 
-        serverGrid.appendChild(card);
+        button.classList.add(
+            "danger-button"
+        );
 
-    });
+    } else {
 
+        status.textContent =
+            "You are currently off shift.";
+
+        button.textContent =
+            "Start Shift";
+
+        button.classList.remove(
+            "danger-button"
+        );
+    }
+}
+
+
+function toggleShift() {
+
+    const guildId =
+        localStorage.getItem("patrly_guild_id");
+
+    if (!guildId) return;
+
+    const userShiftKey =
+        `patrly_shift_${guildId}`;
+
+    const current =
+        localStorage.getItem(userShiftKey);
+
+    if (current) {
+
+        localStorage.removeItem(
+            userShiftKey
+        );
+
+    } else {
+
+        localStorage.setItem(
+            userShiftKey,
+            new Date().toISOString()
+        );
+    }
+
+    setupShift();
 }
 
 
 /* =========================
-   OPEN SERVER
+   HELPERS
 ========================= */
 
-function openServer(server) {
-
-    sessionStorage.setItem(
-        "selectedServer",
-        JSON.stringify(server)
-    );
-
-
-    document
-        .getElementById("serverPage")
-        .classList.add("hidden-page");
-
-
-    document
-        .getElementById("moderationPage")
-        .classList.remove("hidden-page");
-
-
-    document
-        .getElementById("selectedServerName")
-        .textContent =
-        server.name;
-
-
-    window.scrollTo(0, 0);
-
-}
-
-
-/* =========================
-   BACK TO SERVERS
-========================= */
-
-function backToServers() {
-
-    document
-        .getElementById("moderationPage")
-        .classList.add("hidden-page");
-
-
-    document
-        .getElementById("serverPage")
-        .classList.remove("hidden-page");
-
-
-    window.scrollTo(0, 0);
-
-}
-
-
-/* =========================
-   MODERATION TOOLS
-========================= */
-
-function openModerationTool(tool) {
-
+function comingSoon() {
     alert(
-        tool +
-        " is coming next in the Patrly moderation dashboard."
+        "This Patrly feature is coming next."
     );
-
 }
 
-
-/* =========================
-   CREATE DISCORD SERVER
-========================= */
-
-function createDiscordServer() {
-
-    window.open(
-        "https://discord.com/channels/@me",
-        "_blank",
-        "noopener,noreferrer"
-    );
-
-}
-
-
-/* =========================
-   LOGOUT
-========================= */
-
-function logout() {
-
-    sessionStorage.removeItem(
-        "selectedServer"
-    );
-
-
-    window.location.href =
-        "/api/auth/discord?logout=true";
-
-}
-
-
-/* =========================
-   ESCAPE HTML
-========================= */
 
 function escapeHTML(value) {
 
@@ -339,31 +329,28 @@ function escapeHTML(value) {
         .replaceAll(">", "&gt;")
         .replaceAll('"', "&quot;")
         .replaceAll("'", "&#039;");
-
 }
 
 
-/* =========================
-   CHECK URL
-========================= */
+function escapeAttribute(value) {
 
-document.addEventListener(
-    "DOMContentLoaded",
-    () => {
-
-        const params =
-            new URLSearchParams(
-                window.location.search
-            );
+    return String(value)
+        .replaceAll("\\", "\\\\")
+        .replaceAll("'", "\\'")
+        .replaceAll('"', "&quot;");
+}
 
 
-        if (
-            params.get("logged_in") === "true"
-        ) {
+if (
+    document.readyState === "loading"
+) {
 
-            showServerPage();
+    document.addEventListener(
+        "DOMContentLoaded",
+        loadUser
+    );
 
-        }
+} else {
 
-    }
-);
+    loadUser();
+}
